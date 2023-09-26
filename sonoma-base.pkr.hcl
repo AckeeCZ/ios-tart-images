@@ -25,7 +25,7 @@ source "tart-cli" "tart" {
         # Language
         "<wait30s>english<enter>",
         # Select Your Country and Region
-        "<wait30s>united states<leftShiftOn><tab><leftShiftOff><spacebar>",
+        "<wait30s>czechia<leftShiftOn><tab><leftShiftOff><spacebar>",
         # Written and Spoken Languages
         "<wait10s><leftShiftOn><tab><leftShiftOff><spacebar>",
         # Accessibility
@@ -49,7 +49,7 @@ source "tart-cli" "tart" {
         # Are you sure you don't want to use Location Services?
         "<wait10s><tab><spacebar>",
         # Select Your Time Zone
-        "<wait10s><tab>UTC<enter><leftShiftOn><tab><leftShiftOff><spacebar>",
+        "<wait10s><tab>Prague<enter><leftShiftOn><tab><leftShiftOff><spacebar>",
         # Analytics
         "<wait10s><leftShiftOn><tab><leftShiftOff><spacebar>",
         # Screen Time
