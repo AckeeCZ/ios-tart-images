@@ -144,8 +144,7 @@ build {
             "echo 'if which rbenv > /dev/null; then eval \"$(rbenv init -)\"; fi' >> ~/.zprofile",
             "source ~/.zprofile",
             "rbenv install 3.1.4",
-            "rbenv install $(rbenv install -l | grep -v - | tail -1)",
-            "rbenv global $(rbenv install -l | grep -v - | tail -1)",
+            "rbenv global 3.1.4",
             "gem install bundler",
         ]
     }
