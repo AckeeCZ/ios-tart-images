@@ -29,6 +29,8 @@ build {
     provisioner "shell" {
         inline = [
             "echo 'export PATH=/usr/local/bin/:$PATH' >> ~/.zprofile",
+            "echo \"export MINT_PATH='/Volumes/My Shared Files/mint'\" >> ~/.zprofile",
+            "echo \"export MINT_LINK_PATH='/Volumes/My Shared Files/mint/bin'\" >> ~/.zprofile",
             "source ~/.zprofile",
             "brew install xcodesorg/made/xcodes",
             "echo 'Downloading Xcode'",
@@ -66,6 +68,16 @@ build {
             "sudo add-certificate AppleWWDRCAG3.cer",
             "sudo add-certificate DeveloperIDG2CA.cer",
             "rm add-certificate* *.cer"
+        ]
+    }
+
+    provisioner "shell" {
+        inline = [
+            "source ~/.zprofile",
+            "git clone https://github.com/olejnjak/Mint",
+            "cd Mint",
+            "sudo make",
+            "rm -rf Mint",
         ]
     }
 

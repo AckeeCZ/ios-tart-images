@@ -152,7 +152,6 @@ build {
     provisioner "shell" {
         inline = [
             "sudo safaridriver --enable",
-            "ln -s '/Volumes/My Shared Files/ssh' ~/.ssh",
         ]
     }
 }

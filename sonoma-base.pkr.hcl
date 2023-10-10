@@ -131,7 +131,7 @@ build {
             "source ~/.zprofile",
             "brew --version",
             "brew update",
-            "brew install wget cmake gcc git-lfs jq gh gitlab-runner mint",
+            "brew install wget cmake gcc git-lfs jq gh gitlab-runner",
             "git lfs install",
         ]
     }
@@ -152,7 +152,6 @@ build {
     provisioner "shell" {
         inline = [
             "sudo safaridriver --enable",
-            "ln -s '/Volumes/My Shared Files/ssh' ~/.ssh",
         ]
     }
 }
