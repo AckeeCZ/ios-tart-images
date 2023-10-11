@@ -74,7 +74,7 @@ build {
     provisioner "shell" {
         inline = [
             "source ~/.zprofile",
-            "git clone https://github.com/olejnjak/Mint",
+            "git clone -b fix/copy https://github.com/olejnjak/Mint",
             "cd Mint",
             "sudo make",
             "rm -rf Mint",
@@ -85,8 +85,6 @@ build {
         inline = [
             "source ~/.zprofile",
             "curl -Ls https://install.tuist.io | bash",
-            "mint install olejnjak/Torino",
-            "mint install realm/SwiftLint",
             "xcrun simctl create 'iPhone 13 Pro Max' 'iPhone 13 Pro Max'",
         ]
     }
