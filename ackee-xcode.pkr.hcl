@@ -74,7 +74,7 @@ build {
     provisioner "shell" {
         inline = [
             "source ~/.zprofile",
-            "git clone -b fix/copy https://github.com/olejnjak/Mint",
+            "git clone https://github.com/yonaskolb/Mint",
             "cd Mint",
             "sudo make",
             "rm -rf Mint",
