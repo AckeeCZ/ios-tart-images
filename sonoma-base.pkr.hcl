@@ -10,7 +10,7 @@ packer {
 source "tart-cli" "tart" {
     # You can find macOS IPSW URLs on various websites like https://ipsw.me/
     # and https://www.theiphonewiki.com/wiki/Beta_Firmware/Mac/13.x
-    from_ipsw    = "https://updates.cdn-apple.com/2023FallFCS/fullrestores/042-54934/0E101AD6-3117-4B63-9BF1-143B6DB9270A/UniversalMac_14.0_23A344_Restore.ipsw"
+    from_ipsw    = "https://updates.cdn-apple.com/2023FallFCS/fullrestores/052-15117/DC2EE605-ABF3-41AE-9652-D137A8AA5907/UniversalMac_14.2_23C64_Restore.ipsw"
     vm_name      = "sonoma-base"
     cpu_count    = 4
     memory_gb    = 8
@@ -105,14 +105,6 @@ build {
             "sudo systemsetup -setdisplaysleep Off",
             "sudo systemsetup -setsleep Off",
             "sudo systemsetup -setcomputersleep Off",
-            // Launch Safari to populate the defaults
-            "/Applications/Safari.app/Contents/MacOS/Safari &",
-            "sleep 30",
-            "kill -9 %1",
-            // Enable Safari's remote automation and "Develop" menu
-            "sudo safaridriver --enable",
-            "defaults write com.apple.Safari.SandboxBroker ShowDevelopMenu -bool true",
-            "defaults write com.apple.Safari IncludeDevelopMenu -bool true",
             // Disable screen lock
             //
             // Note that this only works if the user is logged-in,
