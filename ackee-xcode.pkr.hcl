@@ -12,7 +12,7 @@ variable "xcode_version" {
 }
 
 source "tart-cli" "tart" {
-    vm_base_name = "ghcr.io/ackeecz/macos-base:latest"
+    vm_base_name = "ghcr.io/ackeecz/macos-base:14.0"
     vm_name      = "ackee-xcode:${var.xcode_version}"
     cpu_count    = 4
     memory_gb    = 8
