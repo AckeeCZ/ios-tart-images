@@ -44,6 +44,10 @@ build {
             "xcodebuild -downloadAllPlatforms",
             "xcodebuild -runFirstLaunch",
             "/usr/sbin/softwareupdate --install-rosetta --agree-to-license",
+            # enable all plugins
+            "defaults write com.apple.dt.Xcode IDESkipPackagePluginFingerprintValidatation -bool YES",
+            # enable all macros
+            "defaults write com.apple.dt.Xcode IDESkipMacroFingerprintValidation -bool YES",
         ]
     }
 
