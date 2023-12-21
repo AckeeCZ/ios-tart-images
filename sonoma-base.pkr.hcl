@@ -10,7 +10,7 @@ packer {
 source "tart-cli" "tart" {
     # You can find macOS IPSW URLs on various websites like https://ipsw.me/
     # and https://www.theiphonewiki.com/wiki/Beta_Firmware/Mac/13.x
-    from_ipsw    = "https://updates.cdn-apple.com/2023FallFCS/fullrestores/052-15117/DC2EE605-ABF3-41AE-9652-D137A8AA5907/UniversalMac_14.2_23C64_Restore.ipsw"
+    from_ipsw    = "https://updates.cdn-apple.com/2023FallFCS/fullrestores/052-22662/ECE59A41-DACC-4CA5-AB23-FDED1A4567DE/UniversalMac_14.2.1_23C71_Restore.ipsw"
     vm_name      = "sonoma-base"
     cpu_count    = 4
     memory_gb    = 8
