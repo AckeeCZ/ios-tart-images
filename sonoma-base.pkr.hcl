@@ -10,7 +10,7 @@ packer {
 source "tart-cli" "tart" {
     # You can find macOS IPSW URLs on various websites like https://ipsw.me/
     # and https://www.theiphonewiki.com/wiki/Beta_Firmware/Mac/13.x
-    from_ipsw    = "https://updates.cdn-apple.com/2023FallFCS/fullrestores/052-22662/ECE59A41-DACC-4CA5-AB23-FDED1A4567DE/UniversalMac_14.2.1_23C71_Restore.ipsw"
+    from_ipsw    = "https://updates.cdn-apple.com/2024WinterFCS/fullrestores/052-40770/72916BCC-D357-422D-A4A2-EF1DEDF6968C/UniversalMac_14.3.1_23D60_Restore.ipsw"
     vm_name      = "sonoma-base"
     cpu_count    = 4
     memory_gb    = 8
@@ -68,12 +68,6 @@ source "tart-cli" "tart" {
         "<wait10s><tab><tab><tab><tab><tab><spacebar>",
         # Navigate to "Remote Login" and enable it
         "<wait10s><tab><tab><tab><tab><tab><tab><tab><tab><tab><tab><tab><tab><spacebar>",
-        # Open "Remote Login" details
-        "<wait10s><tab><spacebar>",
-        # Enable "Full Disk Access"
-        "<wait10s><tab><spacebar>",
-        # Click "Done"
-        "<wait10s><leftShiftOn><tab><leftShiftOff><leftShiftOn><tab><leftShiftOff><spacebar>",
         # Close window
         "<leftAltOn><q><leftAltOff>",
         # Disable Voice Over
@@ -131,19 +125,12 @@ build {
     provisioner "shell" {
         inline = [
             "source ~/.zprofile",
-            "brew install libyaml", # https://github.com/rbenv/ruby-build/discussions/2118
-            "brew install rbenv",
+            "brew install libyaml rbenv", # https://github.com/rbenv/ruby-build/discussions/2118
             "echo 'if which rbenv > /dev/null; then eval \"$(rbenv init -)\"; fi' >> ~/.zprofile",
             "source ~/.zprofile",
             "rbenv install 3.1.4",
             "rbenv global 3.1.4",
             "gem install bundler",
-        ]
-    }
-
-    provisioner "shell" {
-        inline = [
-            "sudo safaridriver --enable",
         ]
     }
 }
