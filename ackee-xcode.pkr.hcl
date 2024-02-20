@@ -12,7 +12,7 @@ variable "xcode_version" {
 }
 
 source "tart-cli" "tart" {
-    vm_base_name = "ghcr.io/ackeecz/macos-base:14.0"
+    vm_base_name = "ghcr.io/ackeecz/macos-base:latest"
     vm_name      = "ackee-xcode:${var.xcode_version}"
     cpu_count    = 4
     memory_gb    = 8
@@ -26,20 +26,20 @@ source "tart-cli" "tart" {
 build {
     sources = ["source.tart-cli.tart"]
 
+    provisioner "file" {
+        source      = pathexpand("~/Downloads/Xcode_${var.xcode_version}.xip")
+        destination = "/Users/admin/Downloads/Xcode_${var.xcode_version}.xip"
+    }
+
     provisioner "shell" {
         inline = [
             "echo 'export PATH=/usr/local/bin/:$PATH' >> ~/.zprofile",
-            "echo \"export MINT_PATH='/Volumes/My Shared Files/mint'\" >> ~/.zprofile",
-            "echo \"export MINT_LINK_PATH='/Volumes/My Shared Files/mint/bin'\" >> ~/.zprofile",
             "source ~/.zprofile",
             "brew install xcodesorg/made/xcodes",
-            "echo 'Downloading Xcode'",
-            "wget --quiet https://storage.googleapis.com/xcodes-cache/Xcode_${var.xcode_version}.xip",
-            "echo 'Downloaded Xcode'",
             "echo 'Starting Xcode installation'",
-            "xcodes install ${var.xcode_version} --experimental-unxip --path $PWD/Xcode_${var.xcode_version}.xip",
+            "xcodes install ${var.xcode_version} --experimental-unxip --path ~/Downloads/Xcode_${var.xcode_version}.xip",
             "echo 'Xcode installed'",
-            "sudo rm -rf ~/.Trash/*",
+            "sudo rm -rf ~/Downloads/Xcode_${var.xcode_version}.xip",
             "xcodes select ${var.xcode_version}",
             "xcodebuild -downloadAllPlatforms",
             "xcodebuild -runFirstLaunch",
