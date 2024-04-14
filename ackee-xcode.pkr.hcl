@@ -12,7 +12,7 @@ variable "xcode_version" {
 }
 
 source "tart-cli" "tart" {
-    vm_base_name = "ghcr.io/ackeecz/macos-base:latest"
+    vm_base_name = "ghcr.io/ackeecz/macos-base:sonoma"
     vm_name      = "ackee-xcode:${var.xcode_version}"
     cpu_count    = 4
     memory_gb    = 8
@@ -31,6 +31,7 @@ build {
         destination = "/Users/admin/Downloads/Xcode_${var.xcode_version}.xip"
     }
 
+    # xcode
     provisioner "shell" {
         inline = [
             "echo 'export PATH=/usr/local/bin/:$PATH' >> ~/.zprofile",
@@ -75,20 +76,26 @@ build {
         ]
     }
 
+    # mint
     provisioner "shell" {
         inline = [
             "source ~/.zprofile",
             "git clone https://github.com/yonaskolb/Mint",
             "cd Mint",
             "sudo make",
-            "rm -rf Mint",
+            "cd ..",
+            "sudo rm -rf Mint",
         ]
     }
 
+    # mise & tuist
     provisioner "shell" {
         inline = [
             "source ~/.zprofile",
-            "curl -Ls https://install.tuist.io | bash",
+            "curl https://mise.run | sh",
+            "~/.local/bin/mise activate --shims >> ~/.zprofile",
+            "source ~/.zprofile",
+            "mise install tuist",
             "xcrun simctl create 'iPhone 13 Pro Max' 'iPhone 13 Pro Max'",
         ]
     }
