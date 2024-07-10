@@ -115,11 +115,6 @@ build {
     provisioner "shell" {
         inline = [
             "source ~/.zprofile",
-            "brew install ruby@3.1",
-            "echo 'export LDFLAGS=\"-L/opt/homebrew/opt/ruby@3.1/lib\"' >> ~/.zprofile",
-            "echo 'export CPPFLAGS=\"-I/opt/homebrew/opt/ruby@3.1/include\"' >> ~/.zprofile",
-            "echo 'export PATH=\"/opt/homebrew/opt/ruby@3.1/bin:$PATH\"' >> ~/.zprofile",
-            "echo 'export PATH=\"/opt/homebrew/lib/ruby/gems/3.1.0/gems:$PATH\"' >> ~/.zprofile",
             "brew install flutter",
             "echo 'export PATH=\"$HOME/.pub-cache/bin:/Users/admin/flutter/bin:$PATH\"' >> ~/.zprofile",
         ]
