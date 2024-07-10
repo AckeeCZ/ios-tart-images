@@ -111,6 +111,14 @@ build {
         ]
     }
 
+    # Flutter
+    provisioner "shell" {
+        inline = [
+            "source ~/.zprofile",
+            "brew install --cask https://raw.githubusercontent.com/Homebrew/homebrew-cask/673bf36ef0b434bc0f1b879ac055ecabff1edcac/Casks/flutter.rb",
+        ]
+    }
+
     // check there is at least 15GB of free space and fail if not
     provisioner "shell" {
         inline = [
