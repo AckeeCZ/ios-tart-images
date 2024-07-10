@@ -115,7 +115,7 @@ build {
     provisioner "shell" {
         inline = [
             "source ~/.zprofile",
-            "brew install flutter",
+            "brew install --cask https://raw.githubusercontent.com/Homebrew/homebrew-cask/673bf36ef0b434bc0f1b879ac055ecabff1edcac/Casks/flutter.rb",
             "echo 'export PATH=\"$HOME/.pub-cache/bin:/Users/admin/flutter/bin:$PATH\"' >> ~/.zprofile",
         ]
     }
