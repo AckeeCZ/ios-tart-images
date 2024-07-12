@@ -24,12 +24,19 @@ This image contains pretty much everything that is required by our stack to be i
 - [Mint](https://github.com/yonaskolb/Mint)
 - [Tuist](https://tuist.io)
 - OpenJDK for [KMP/KMM](https://kotlinlang.org/docs/multiplatform.html)
+- [Flutter](https://flutter.dev)
 
-This image is versioned based on Xcode version, so currently the latest version is `ackee-xcode:15.2`. Latest tag points to the latest stable version. As in [macOS-base](#macos-base) image, tags can be moved if we need to make any changes in it, for fixed version specify image's SHA.
+This image is versioned based on Xcode version. Latest tag points to the latest stable version. As in [macOS-base](#macos-base) image, tags can be moved if we need to make any changes in it, for fixed version specify image's SHA. You can also use a v-prefixed tag that will ensure latest minor/bugfix version for specified major version, so using `v15` would point to latest published `15.x.x`. 
 
 #### Build notes
 
 To be able to build the image using [Packer][packer], you are expected to specify `xcode_version` variable and you are also expected to have `~/Downloads/Xcode_{xcode_version}.xip` downloaded. 
+
+So to build this image you would run
+
+```sh
+packer build --var xcode_version=<xcode version> ackee-xcode.pkr.hcl
+```
 
 [tart]: https://tart.run
 [homebrew]: https://brew.sh
