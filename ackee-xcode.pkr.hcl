@@ -117,6 +117,7 @@ build {
             "source ~/.zprofile",
             "brew install --cask https://raw.githubusercontent.com/Homebrew/homebrew-cask/673bf36ef0b434bc0f1b879ac055ecabff1edcac/Casks/flutter.rb",
             "sudo spctl --master-disable",
+            "gem install cocoapods",
         ]
     }
 
