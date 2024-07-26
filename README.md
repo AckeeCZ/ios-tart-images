@@ -30,9 +30,15 @@ This image is versioned based on Xcode version. Latest tag points to the latest 
 
 #### Build notes
 
-To be able to build the image using [Packer][packer], you are expected to specify `xcode_version` variable and you are also expected to have `~/Downloads/Xcode_{xcode_version}.xip` downloaded. 
+To be able to build the image using [Packer][packer], you are expected to specify `xcode_version` variable and you are also expected to have `~/Downloads/Xcode_{xcode_version}.xip` downloaded.
 
-So to build this image you would run
+After [Packer][packer] is installed you also need Tart plugin for [Packer][packer].
+
+```sh
+packer plugins install github.com/cirruslabs/tart
+```
+
+And finally to build this image you would run
 
 ```sh
 packer build --var xcode_version=<xcode version> ackee-xcode.pkr.hcl
