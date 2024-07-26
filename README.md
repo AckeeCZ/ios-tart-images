@@ -57,10 +57,10 @@ As a username use your Github username and as a password you need to generate ne
 Once you're successfully logged in just run
 
 ```sh
-tart push <image> tart push <image> ghcr.io/ackeecz/<image>
+tart push <image>:<tag> ghcr.io/ackeecz/<image>:<tag>
 ```
 
-where `<image>` is the name of the newly created image. It's gonna take a while, so be patient. 💪
+where `<image>` is the name of the newly created image and `<tag>` is the version. It's gonna take a while, so be patient. 💪
 
 [tart]: https://tart.run
 [homebrew]: https://brew.sh
