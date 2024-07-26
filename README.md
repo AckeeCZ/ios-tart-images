@@ -44,6 +44,24 @@ And finally to build this image you would run
 packer build --var xcode_version=<xcode version> ackee-xcode.pkr.hcl
 ```
 
+#### Publish
+
+To publish the image to the remote so everyone on the team can use it, you have to at first login [Tart][tart] to the remote.
+
+```sh
+tart login ghcr.io
+```
+
+As a username use your Github username and as a password you need to generate new [Personal access token](https://github.com/settings/tokens).
+
+Once you're successfully logged in just run
+
+```sh
+tart push <image>:<tag> ghcr.io/ackeecz/<image>:<tag>
+```
+
+where `<image>` is the name of the newly created image and `<tag>` is the version. It's gonna take a while, so be patient. 💪
+
 [tart]: https://tart.run
 [homebrew]: https://brew.sh
 [packer]: https://www.packer.io
