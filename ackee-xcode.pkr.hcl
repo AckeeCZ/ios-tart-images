@@ -121,6 +121,18 @@ build {
         ]
     }
 
+    # React Native - Expo
+    provisioner "shell" {
+        inline = [
+            "source ~/.zprofile",
+            "brew install yarn node@20 fastlane cocoapods",
+            "brew link --overwrite node@20",
+            "corepack enable",
+            "corepack use yarn@4",
+            "npm i -g eas-cli"
+        ]
+    }
+
     // check there is at least 15GB of free space and fail if not
     provisioner "shell" {
         inline = [
