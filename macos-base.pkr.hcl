@@ -1,14 +1,14 @@
 packer {
     required_plugins {
         tart = {
-            version = ">= 1.2.0"
+            version = ">= 1.12.0"
             source  = "github.com/cirruslabs/tart"
         }
     }
 }
 
 source "tart-cli" "tart" {
-    from_ipsw    = "https://updates.cdn-apple.com/2024SpringFCS/fullrestores/062-01897/C874907B-9F82-4109-87EB-6B3C9BF1507D/UniversalMac_14.5_23F79_Restore.ipsw"
+    from_ipsw    = "https://updates.cdn-apple.com/2024FallFCS/fullrestores/062-78489/BDA44327-C79E-4608-A7E0-455A7E91911F/UniversalMac_15.0_24A335_Restore.ipsw"
     vm_name      = "macos-base"
     cpu_count    = 4
     memory_gb    = 8
@@ -20,8 +20,14 @@ source "tart-cli" "tart" {
     boot_command = [
         # hello, hola, bonjour, etc.
         "<wait60s><spacebar>",
-        # Language
-        "<wait30s>english<enter>",
+        # Language: most of the times we have a list of "English"[1], "English (UK)", etc. with
+        # "English" language already selected. If we type "english", it'll cause us to switch
+        # to the "English (UK)", which is not what we want. To solve this, we switch to some other
+        # language first, e.g. "Italiano" and then switch back to "English". We'll then jump to the
+        # first entry in a list of "english"-prefixed items, which will be "English".
+        #
+        # [1]: should be named "English (US)", but oh well 🤷
+        "<wait30s>italiano<esc>english<enter>",
         # Select Your Country and Region
         "<wait30s>czechia<leftShiftOn><tab><leftShiftOff><spacebar>",
         # Written and Spoken Languages
@@ -56,8 +62,13 @@ source "tart-cli" "tart" {
         "<wait10s><tab><spacebar><leftShiftOn><tab><leftShiftOff><spacebar>",
         # Choose Your Look
         "<wait10s><leftShiftOn><tab><leftShiftOff><spacebar>",
-        # Enable Voice Over
-        "<wait10s><leftAltOn><f5><leftAltOff><wait5s>v",
+        # Welcome to Mac
+        "<wait10s><spacebar>",
+        # Enable Keyboard navigation
+        # This is so that we can navigate the System Settings app using the keyboard
+        "<wait10s><leftAltOn><spacebar><leftAltOff>Terminal<enter>",
+        "<wait10s>defaults write NSGlobalDomain AppleKeyboardUIMode -int 3<enter>",
+        "<wait10s><leftAltOn>q<leftAltOff>",
         # Now that the installation is done, open "System Settings"
         "<wait10s><leftAltOn><spacebar><leftAltOff>System Settings<enter>",
         # Navigate to "Sharing"
@@ -66,10 +77,8 @@ source "tart-cli" "tart" {
         "<wait10s><tab><tab><tab><tab><tab><spacebar>",
         # Navigate to "Remote Login" and enable it
         "<wait10s><tab><tab><tab><tab><tab><tab><tab><tab><tab><tab><tab><tab><spacebar>",
-        # Close window
-        "<leftAltOn><q><leftAltOff>",
-        # Disable Voice Over
-        "<leftAltOn><f5><leftAltOff>",
+        # Quit System Settings
+        "<wait10s><leftAltOn>q<leftAltOff>",
     ]
 
     // A (hopefully) temporary workaround for Virtualization.Framework's
