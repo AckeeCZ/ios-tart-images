@@ -1,7 +1,7 @@
 packer {
     required_plugins {
         tart = {
-            version = ">= 1.2.0"
+            version = ">= 1.12.0"
             source  = "github.com/cirruslabs/tart"
         }
     }
@@ -12,7 +12,7 @@ variable "xcode_version" {
 }
 
 source "tart-cli" "tart" {
-    vm_base_name = "ghcr.io/ackeecz/macos-base:sonoma"
+    vm_base_name = "ghcr.io/ackeecz/macos-base:sequoia"
     vm_name      = "ackee-xcode:${var.xcode_version}"
     cpu_count    = 4
     memory_gb    = 8
