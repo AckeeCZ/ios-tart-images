@@ -41,6 +41,8 @@ build {
             "xcodes install ${var.xcode_version} --experimental-unxip --path ~/Downloads/Xcode_${var.xcode_version}.xip",
             "echo 'Xcode installed'",
             "sudo rm -rf ~/Downloads/Xcode_${var.xcode_version}.xip",
+            "rm -rf ~/.Trash/Xcode_${var.xcode_version}.xip",
+            "sudo rm -rf ~/.Trash/Xcode_${var.xcode_version}.xip",
             "xcodes select ${var.xcode_version}",
             "xcodebuild -downloadAllPlatforms",
             "xcodebuild -runFirstLaunch",
