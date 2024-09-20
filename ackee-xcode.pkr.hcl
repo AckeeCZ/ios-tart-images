@@ -113,23 +113,6 @@ build {
         ]
     }
 
-    # Flutter
-    provisioner "shell" {
-        inline = [
-            "source ~/.zprofile",
-            "gem install cocoapods",
-            "echo 'export FLUTTER_HOME=$HOME/flutter' >> ~/.zprofile",
-            "echo 'export PATH=$HOME/flutter:$HOME/flutter/bin/:$HOME/flutter/bin/cache/dart-sdk/bin:$PATH' >> ~/.zprofile",
-            "source ~/.zprofile",
-            "git clone https://github.com/flutter/flutter.git $FLUTTER_HOME",
-            "cd $FLUTTER_HOME",
-            "git checkout stable",
-            "flutter doctor --android-licenses",
-            "flutter doctor",
-            "flutter precache",
-        ]
-    }
-
     # React Native - Expo
     provisioner "shell" {
         inline = [
