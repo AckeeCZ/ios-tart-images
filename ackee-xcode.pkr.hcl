@@ -1,7 +1,7 @@
 packer {
     required_plugins {
         tart = {
-            version = ">= 1.2.0"
+            version = ">= 1.12.0"
             source  = "github.com/cirruslabs/tart"
         }
     }
@@ -12,11 +12,11 @@ variable "xcode_version" {
 }
 
 source "tart-cli" "tart" {
-    vm_base_name = "ghcr.io/ackeecz/macos-base:sonoma"
+    vm_base_name = "ghcr.io/ackeecz/macos-base:sequoia"
     vm_name      = "ackee-xcode:${var.xcode_version}"
     cpu_count    = 4
     memory_gb    = 8
-    disk_size_gb = 90
+    disk_size_gb = 100
     ssh_password = "admin"
     ssh_username = "admin"
     ssh_timeout  = "120s"
@@ -41,6 +41,8 @@ build {
             "xcodes install ${var.xcode_version} --experimental-unxip --path ~/Downloads/Xcode_${var.xcode_version}.xip",
             "echo 'Xcode installed'",
             "sudo rm -rf ~/Downloads/Xcode_${var.xcode_version}.xip",
+            "rm -rf ~/.Trash/Xcode_${var.xcode_version}.xip",
+            "sudo rm -rf ~/.Trash/Xcode_${var.xcode_version}.xip",
             "xcodes select ${var.xcode_version}",
             "xcodebuild -downloadAllPlatforms",
             "xcodebuild -runFirstLaunch",
@@ -111,24 +113,19 @@ build {
         ]
     }
 
-    # Flutter
-    provisioner "shell" {
-        inline = [
-            "source ~/.zprofile",
-            "brew install --cask https://raw.githubusercontent.com/Homebrew/homebrew-cask/673bf36ef0b434bc0f1b879ac055ecabff1edcac/Casks/flutter.rb",
-            "sudo spctl --master-disable",
-            "gem install cocoapods",
-        ]
-    }
-
     # React Native - Expo
     provisioner "shell" {
         inline = [
             "source ~/.zprofile",
+            "echo Install yarn node fastlane cocoapods",
             "brew install yarn node@20 fastlane cocoapods",
+            "echo Link node",
             "brew link --overwrite node@20",
+            "echo Enable corepack",
             "corepack enable",
+            "echo Corepack use yarn",
             "corepack use yarn@4",
+            "echo Run npm i",
             "npm i -g eas-cli"
         ]
     }
@@ -137,9 +134,11 @@ build {
     provisioner "shell" {
         inline = [
         "source ~/.zprofile",
+        "echo Checking disk space",
         "df -h",
         "export FREE_MB=$(df -m | awk '{print $4}' | head -n 2 | tail -n 1)",
-        "[[ $FREE_MB -gt 15000 ]] && echo OK || exit 1"
+        "echo Available space in MB = $FREE_MB",
+        "[[ $FREE_MB -gt 15000 ]] && echo OK || exit 1",
         ]
     }
 }
