@@ -53,7 +53,7 @@ source "tart-cli" "tart" {
         # Are you sure you don't want to use Location Services?
         "<wait10s><tab><spacebar>",
         # Select Your Time Zone
-        "<wait10s><tab>Prague<enter><leftShiftOn><tab><leftShiftOff><spacebar>",
+        "<wait10s><tab><tab>Prague<enter><leftShiftOn><tab><leftShiftOff><spacebar>",
         # Analytics
         "<wait10s><leftShiftOn><tab><leftShiftOff><spacebar>",
         # Screen Time
@@ -98,6 +98,8 @@ build {
             // See https://github.com/xfreebird/kcpassword for details.
             "echo '00000000: 1ced 3f4a bcbc ba2c caca 4e82' | sudo xxd -r - /etc/kcpassword",
             "sudo defaults write /Library/Preferences/com.apple.loginwindow autoLoginUser admin",
+            // Set timezone to Prague
+            "sudo systemsetup -settimezone 'Europe/Prague'",
             // Disable screensaver at login screen
             "sudo defaults write /Library/Preferences/com.apple.screensaver loginWindowIdleTime 0",
             // Disable screensaver for admin user
