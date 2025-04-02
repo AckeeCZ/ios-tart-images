@@ -44,7 +44,7 @@ build {
             "rm -rf ~/.Trash/Xcode_${var.xcode_version}.xip",
             "sudo rm -rf ~/.Trash/Xcode_${var.xcode_version}.xip",
             "xcodes select ${var.xcode_version}",
-            "xcodebuild -downloadAllPlatforms",
+            "xcodebuild -downloadPlatform ios",
             "xcodebuild -runFirstLaunch",
             "/usr/sbin/softwareupdate --install-rosetta --agree-to-license",
             # enable all plugins
