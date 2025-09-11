@@ -49,7 +49,7 @@ packer build --var xcode_version=<xcode version> ackee-xcode.pkr.hcl
 To publish the image to the remote so everyone on the team can use it, you have to at first login [Tart][tart] to the remote.
 
 ```sh
-tart login ghcr.io
+tart login registry.hub.docker.com
 ```
 
 As a username use your Github username and as a password you need to generate new [Personal access token](https://github.com/settings/tokens).
@@ -57,7 +57,7 @@ As a username use your Github username and as a password you need to generate ne
 Once you're successfully logged in just run
 
 ```sh
-tart push <image>:<tag> ghcr.io/ackeecz/<image>:<tag>
+tart push <image>:<tag> registry.hub.docker.com/ackee/<image>:<tag>
 ```
 
 where `<image>` is the name of the newly created image and `<tag>` is the version. It's gonna take a while, so be patient. 💪
