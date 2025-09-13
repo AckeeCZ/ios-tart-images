@@ -52,7 +52,7 @@ To publish the image to the remote so everyone on the team can use it, you have 
 tart login registry.hub.docker.com
 ```
 
-As a username use your Github username and as a password you need to generate new [Personal access token](https://github.com/settings/tokens).
+As a username use your Dockerhub username and as a password you need to generate new [Personal access token](https://app.docker.com/accounts/ackee/settings/personal-access-tokens/create). Assign it _Read & Write_ permissions.
 
 Once you're successfully logged in just run
 
