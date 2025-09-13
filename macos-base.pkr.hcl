@@ -8,7 +8,7 @@ packer {
 }
 
 source "tart-cli" "tart" {
-    from_ipsw    = "https://updates.cdn-apple.com/2025SummerFCS/fullrestores/093-10809/CFD6DD38-DAF0-40DA-854F-31AAD1294C6F/UniversalMac_15.6.1_24G90_Restore.ipsw"
+    from_ipsw    = "https://updates.cdn-apple.com/2025FallFCS/fullrestores/093-37294/119120C1-6306-4287-AC2B-0AF964CD0B3C/UniversalMac_26.0_25A353_Restore.ipsw"
     vm_name      = "macos-base"
     cpu_count    = 4
     memory_gb    = 8
@@ -39,7 +39,7 @@ source "tart-cli" "tart" {
         # Data & Privacy
         "<wait10s><leftShiftOn><tab><leftShiftOff><spacebar>",
         # Create a Mac Account
-        "<wait10s>Managed via Tart<tab>admin<tab>admin<tab>admin<tab><tab><spacebar><tab><tab><spacebar>",
+        "<wait10s><tab><tab><tab><tab><tab><tab>Managed via Tart<tab>admin<tab>admin<tab>admin<tab><tab><spacebar><tab><tab><spacebar>",
         # Enable Voice Over
         "<wait120s><leftAltOn><f5><leftAltOff>",
         # Sign In with Your Apple ID
@@ -55,34 +55,38 @@ source "tart-cli" "tart" {
         # Are you sure you don't want to use Location Services?
         "<wait10s><tab><spacebar>",
         # Select Your Time Zone
-        "<wait10s><tab><tab>UTC<enter><leftShiftOn><tab><tab><leftShiftOff><spacebar>",
+        "<wait10s><tab><tab><tab>UTC<enter><leftShiftOn><tab><leftShiftOff><spacebar>",
         # Analytics
         "<wait10s><leftShiftOn><tab><leftShiftOff><spacebar>",
         # Screen Time
-        "<wait10s><tab><spacebar>",
+        "<wait10s><tab><tab><spacebar>",
         # Siri
         "<wait10s><tab><spacebar><leftShiftOn><tab><leftShiftOff><spacebar>",
+        # You Mac is Ready for FileVault
+        "<wait10s><leftShiftOn><tab><tab><leftShiftOff><spacebar>",
+        # Mac Data Will Not Be Securely Encrypted
+        "<wait10s><tab><spacebar>",
         # Choose Your Look
         "<wait10s><leftShiftOn><tab><leftShiftOff><spacebar>",
         # Update Mac Automatically
-        "<wait10s><tab><spacebar>",
+        "<wait10s><tab><tab><spacebar>",
         # Welcome to Mac
-        "<wait10s><spacebar>",
+        "<wait30s><spacebar>",
         # Disable Voice Over
-        "<leftAltOn><f5><leftAltOff>",
+        "<wait10s><leftAltOn><f5><leftAltOff>",
         # Enable Keyboard navigation
         # This is so that we can navigate the System Settings app using the keyboard
-        "<wait10s><leftAltOn><spacebar><leftAltOff>Terminal<enter>",
-        "<wait10s>defaults write NSGlobalDomain AppleKeyboardUIMode -int 3<enter>",
+        "<wait10s><leftAltOn><spacebar><leftAltOff>Terminal<wait10s><enter>",
+        "<wait10s><wait10s>defaults write NSGlobalDomain AppleKeyboardUIMode -int 3<enter>",
         "<wait10s><leftAltOn>q<leftAltOff>",
         # Now that the installation is done, open "System Settings"
-        "<wait10s><leftAltOn><spacebar><leftAltOff>System Settings<enter>",
+        "<wait10s><leftAltOn><spacebar><leftAltOff>System Settings<wait30s><enter>",
         # Navigate to "Sharing"
-        "<wait10s><leftCtrlOn><f2><leftCtrlOff><right><right><right><down>Sharing<enter>",
+        "<wait15s><leftCtrlOn><f2><leftCtrlOff><right><right><right><down>Sharing<enter>",
         # Navigate to "Screen Sharing" and enable it
-        "<wait10s><tab><tab><tab><tab><tab><tab><tab><spacebar>",
+        "<wait15s><tab><tab><tab><tab><tab><spacebar>",
         # Navigate to "Remote Login" and enable it
-        "<wait10s><tab><tab><tab><tab><tab><tab><tab><tab><tab><tab><tab><tab><spacebar>",
+        "<wait15s><tab><tab><tab><tab><tab><tab><tab><tab><tab><tab><tab><tab><spacebar>",
         # Quit System Settings
         "<wait10s><leftAltOn>q<leftAltOff>",
         # Disable Gatekeeper (1/2)
@@ -93,7 +97,7 @@ source "tart-cli" "tart" {
         # Disable Gatekeeper (2/2)
         "<wait10s><leftAltOn><spacebar><leftAltOff>System Settings<enter>",
         "<wait10s><leftCtrlOn><f2><leftCtrlOff><right><right><right><down>Privacy & Security<enter>",
-        "<wait10s><leftShiftOn><tab><leftShiftOff><leftShiftOn><tab><leftShiftOff><leftShiftOn><tab><leftShiftOff><leftShiftOn><tab><leftShiftOff><leftShiftOn><tab><leftShiftOff><leftShiftOn><tab><leftShiftOff><leftShiftOn><tab><leftShiftOff>",
+        "<wait10s><leftShiftOn><tab><tab><tab><tab><tab><leftShiftOff>",
         "<wait10s><down><wait1s><down><wait1s><enter>",
         "<wait10s>admin<enter>",
         "<wait10s><leftShiftOn><tab><leftShiftOff><wait1s><spacebar>",
@@ -136,30 +140,31 @@ build {
         ]
     }
 
-    provisioner "shell" {
-        inline = [
-            "/bin/bash -c \"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\"",
-            "echo \"export LANG=en_US.UTF-8\" >> ~/.zprofile",
-            "echo 'eval \"$(/opt/homebrew/bin/brew shellenv)\"' >> ~/.zprofile",
-            "echo \"export HOMEBREW_NO_AUTO_UPDATE=1\" >> ~/.zprofile",
-            "echo \"export HOMEBREW_NO_INSTALL_CLEANUP=1\" >> ~/.zprofile",
-            "source ~/.zprofile",
-            "brew --version",
-            "brew update",
-            "brew install wget cmake gcc git-lfs jq gh gitlab-runner",
-            "git lfs install",
-        ]
-    }
+    # unreleased systems do not have publicly available command line tools so we will install it in Xcode image
+    # provisioner "shell" {
+    #     inline = [
+    #         "/bin/bash -c \"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\"",
+    #         "echo \"export LANG=en_US.UTF-8\" >> ~/.zprofile",
+    #         "echo 'eval \"$(/opt/homebrew/bin/brew shellenv)\"' >> ~/.zprofile",
+    #         "echo \"export HOMEBREW_NO_AUTO_UPDATE=1\" >> ~/.zprofile",
+    #         "echo \"export HOMEBREW_NO_INSTALL_CLEANUP=1\" >> ~/.zprofile",
+    #         "source ~/.zprofile",
+    #         "brew --version",
+    #         "brew update",
+    #         "brew install wget cmake gcc git-lfs jq gh gitlab-runner",
+    #         "git lfs install",
+    #     ]
+    # }
 
-    provisioner "shell" {
-        inline = [
-            "source ~/.zprofile",
-            "brew install libyaml rbenv", # https://github.com/rbenv/ruby-build/discussions/2118
-            "echo 'if which rbenv > /dev/null; then eval \"$(rbenv init -)\"; fi' >> ~/.zprofile",
-            "source ~/.zprofile",
-            "rbenv install 3.1.4",
-            "rbenv global 3.1.4",
-            "gem install bundler",
-        ]
-    }
+    # provisioner "shell" {
+    #     inline = [
+    #         "source ~/.zprofile",
+    #         "brew install libyaml rbenv", # https://github.com/rbenv/ruby-build/discussions/2118
+    #         "echo 'if which rbenv > /dev/null; then eval \"$(rbenv init -)\"; fi' >> ~/.zprofile",
+    #         "source ~/.zprofile",
+    #         "rbenv install 3.1.4",
+    #         "rbenv global 3.1.4",
+    #         "gem install bundler",
+    #     ]
+    # }
 }
