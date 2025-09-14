@@ -12,7 +12,7 @@ variable "xcode_version" {
 }
 
 source "tart-cli" "tart" {
-    vm_base_name = "registry.hub.docker.com/ackee/tart-macos-base:sequoia"
+    vm_base_name = "registry.hub.docker.com/ackee/tart-macos-base:tahoe"
     vm_name      = "ackee-xcode:${var.xcode_version}"
     cpu_count    = 4
     memory_gb    = 8
