@@ -38,12 +38,8 @@ build {
             "source ~/.zprofile",
             "brew install xcodesorg/made/xcodes",
             "echo 'Starting Xcode installation'",
-            "xcodes install ${var.xcode_version} --experimental-unxip --path ~/Downloads/Xcode_${var.xcode_version}.xip",
+            "sudo xcodes install ${var.xcode_version} --experimental-unxip --path /Users/admin/Downloads/Xcode_${var.xcode_version}.xip --select --empty-trash",
             "echo 'Xcode installed'",
-            "sudo rm -rf ~/Downloads/Xcode_${var.xcode_version}.xip",
-            "rm -rf ~/.Trash/Xcode_${var.xcode_version}.xip",
-            "sudo rm -rf ~/.Trash/Xcode_${var.xcode_version}.xip",
-            "xcodes select ${var.xcode_version}",
             "xcodebuild -downloadPlatform ios",
             "xcodebuild -runFirstLaunch",
             "/usr/sbin/softwareupdate --install-rosetta --agree-to-license",
@@ -90,7 +86,7 @@ build {
         ]
     }
 
-    # KMM
+    # KMP
     provisioner "shell" {
         inline = [
             "source ~/.zprofile",
