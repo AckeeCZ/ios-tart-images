@@ -8,7 +8,7 @@ packer {
 }
 
 source "tart-cli" "tart" {
-    from_ipsw    = "https://updates.cdn-apple.com/2025FallFCS/fullrestores/093-37294/119120C1-6306-4287-AC2B-0AF964CD0B3C/UniversalMac_26.0_25A353_Restore.ipsw"
+    from_ipsw    = "https://updates.cdn-apple.com/2025FallFCS/fullrestores/093-37622/CE01FAB2-7F26-48EE-AEE4-5E57A7F6D8BB/UniversalMac_26.0_25A354_Restore.ipsw"
     vm_name      = "macos-base"
     cpu_count    = 4
     memory_gb    = 8
@@ -78,9 +78,8 @@ source "tart-cli" "tart" {
         # This is so that we can navigate the System Settings app using the keyboard
         "<wait10s><leftAltOn><spacebar><leftAltOff>Terminal<wait10s><enter>",
         "<wait10s><wait10s>defaults write NSGlobalDomain AppleKeyboardUIMode -int 3<enter>",
-        "<wait10s><leftAltOn>q<leftAltOff>",
-        # Now that the installation is done, open "System Settings"
-        "<wait10s><leftAltOn><spacebar><leftAltOff>System Settings<wait30s><enter>",
+        # Now that the installation is done, open "System Settings", open through Terminal as on Tahoe Spotlight opens System Information instead
+        "<wait10s>open '/System/Applications/System Settings.app'<enter>",
         # Navigate to "Sharing"
         "<wait15s><leftCtrlOn><f2><leftCtrlOff><right><right><right><down>Sharing<enter>",
         # Navigate to "Screen Sharing" and enable it
@@ -90,18 +89,19 @@ source "tart-cli" "tart" {
         # Quit System Settings
         "<wait10s><leftAltOn>q<leftAltOff>",
         # Disable Gatekeeper (1/2)
-        "<wait10s><leftAltOn><spacebar><leftAltOff>Terminal<enter>",
         "<wait10s>sudo spctl --global-disable<enter>",
         "<wait10s>admin<enter>",
-        "<wait10s><leftAltOn>q<leftAltOff>",
         # Disable Gatekeeper (2/2)
-        "<wait10s><leftAltOn><spacebar><leftAltOff>System Settings<enter>",
+        # open "System Settings", open through Terminal as on Tahoe Spotlight opens System Information instead
+        "<wait10s>open '/System/Applications/System Settings.app'<enter>",
         "<wait10s><leftCtrlOn><f2><leftCtrlOff><right><right><right><down>Privacy & Security<enter>",
         "<wait10s><leftShiftOn><tab><tab><tab><tab><tab><leftShiftOff>",
         "<wait10s><down><wait1s><down><wait1s><enter>",
         "<wait10s>admin<enter>",
         "<wait10s><leftShiftOn><tab><leftShiftOff><wait1s><spacebar>",
         # Quit System Settings
+        "<wait10s><leftAltOn>q<leftAltOff>",
+        # Quit Terminal
         "<wait10s><leftAltOn>q<leftAltOff>",
     ]
 
@@ -140,31 +140,30 @@ build {
         ]
     }
 
-    # unreleased systems do not have publicly available command line tools so we will install it in Xcode image
-    # provisioner "shell" {
-    #     inline = [
-    #         "/bin/bash -c \"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\"",
-    #         "echo \"export LANG=en_US.UTF-8\" >> ~/.zprofile",
-    #         "echo 'eval \"$(/opt/homebrew/bin/brew shellenv)\"' >> ~/.zprofile",
-    #         "echo \"export HOMEBREW_NO_AUTO_UPDATE=1\" >> ~/.zprofile",
-    #         "echo \"export HOMEBREW_NO_INSTALL_CLEANUP=1\" >> ~/.zprofile",
-    #         "source ~/.zprofile",
-    #         "brew --version",
-    #         "brew update",
-    #         "brew install wget cmake gcc git-lfs jq gh gitlab-runner",
-    #         "git lfs install",
-    #     ]
-    # }
+    provisioner "shell" {
+        inline = [
+            "/bin/bash -c \"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\"",
+            "echo \"export LANG=en_US.UTF-8\" >> ~/.zprofile",
+            "echo 'eval \"$(/opt/homebrew/bin/brew shellenv)\"' >> ~/.zprofile",
+            "echo \"export HOMEBREW_NO_AUTO_UPDATE=1\" >> ~/.zprofile",
+            "echo \"export HOMEBREW_NO_INSTALL_CLEANUP=1\" >> ~/.zprofile",
+            "source ~/.zprofile",
+            "brew --version",
+            "brew update",
+            "brew install wget cmake gcc git-lfs jq gh gitlab-runner",
+            "git lfs install",
+        ]
+    }
 
-    # provisioner "shell" {
-    #     inline = [
-    #         "source ~/.zprofile",
-    #         "brew install libyaml rbenv", # https://github.com/rbenv/ruby-build/discussions/2118
-    #         "echo 'if which rbenv > /dev/null; then eval \"$(rbenv init -)\"; fi' >> ~/.zprofile",
-    #         "source ~/.zprofile",
-    #         "rbenv install 3.1.4",
-    #         "rbenv global 3.1.4",
-    #         "gem install bundler",
-    #     ]
-    # }
+    provisioner "shell" {
+        inline = [
+            "source ~/.zprofile",
+            "brew install libyaml rbenv", # https://github.com/rbenv/ruby-build/discussions/2118
+            "echo 'if which rbenv > /dev/null; then eval \"$(rbenv init -)\"; fi' >> ~/.zprofile",
+            "source ~/.zprofile",
+            "rbenv install 3.1.4",
+            "rbenv global 3.1.4",
+            "gem install bundler",
+        ]
+    }
 }

@@ -12,7 +12,7 @@ variable "xcode_version" {
 }
 
 source "tart-cli" "tart" {
-    vm_base_name = "registry.hub.docker.com/ackee/tart-macos-base:tahoe"
+    vm_base_name = "registry.hub.docker.com/ackee/tart-macos-base:sequoia"
     vm_name      = "ackee-xcode:${var.xcode_version}"
     cpu_count    = 4
     memory_gb    = 8
@@ -36,9 +36,7 @@ build {
         inline = [
             "echo 'export PATH=/usr/local/bin/:$PATH' >> ~/.zprofile",
             "source ~/.zprofile",
-            # cannot install with brew without brew
-            # "brew install xcodesorg/made/xcodes",
-            "curl -s https://api.github.com/repos/XcodesOrg/Xcodes/releases/latest | grep \"browser_download_url\"  | cut -d '\"' -f 4 | grep xcodes.zip | xargs -n1 curl -LO && unzip xcodes.zip && rm xcodes.zip && chmod +x xcodes && sudo mkdir -p /usr/local/bin && sudo mv xcodes /usr/local/bin",
+            "brew install xcodesorg/made/xcodes",
             "echo 'Starting Xcode installation'",
             "xcodes install ${var.xcode_version} --experimental-unxip --path ~/Downloads/Xcode_${var.xcode_version}.xip",
             "echo 'Xcode installed'",
@@ -56,38 +54,10 @@ build {
         ]
     }
 
-    # unreleased systems do not have publicly available command line tools so we need to install Homebrew after Xcode is installed
-    provisioner "shell" {
-        inline = [
-            "/bin/bash -c \"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\"",
-            "echo \"export LANG=en_US.UTF-8\" >> ~/.zprofile",
-            "echo 'eval \"$(/opt/homebrew/bin/brew shellenv)\"' >> ~/.zprofile",
-            "echo \"export HOMEBREW_NO_AUTO_UPDATE=1\" >> ~/.zprofile",
-            "echo \"export HOMEBREW_NO_INSTALL_CLEANUP=1\" >> ~/.zprofile",
-            "source ~/.zprofile",
-            "brew --version",
-            "brew update",
-            "brew install wget cmake gcc git-lfs jq gh gitlab-runner",
-            "git lfs install",
-        ]
-    }
-
     provisioner "shell" {
         inline = [
             "source ~/.zprofile",
-            "brew install libyaml rbenv", # https://github.com/rbenv/ruby-build/discussions/2118
-            "echo 'if which rbenv > /dev/null; then eval \"$(rbenv init -)\"; fi' >> ~/.zprofile",
-            "source ~/.zprofile",
-            "rbenv install 3.1.4",
-            "rbenv global 3.1.4",
-            "gem install bundler",
-        ]
-    }
-
-    provisioner "shell" {
-        inline = [
-            "source ~/.zprofile",
-            "brew install carthage unzip zip ca-certificates",
+            "brew install carthage unzip zip ca-certificates mint",
         ]
     }
 
@@ -105,18 +75,6 @@ build {
             "sudo add-certificate AppleWWDRCAG3.cer",
             "sudo add-certificate DeveloperIDG2CA.cer",
             "rm add-certificate* *.cer"
-        ]
-    }
-
-    # mint
-    provisioner "shell" {
-        inline = [
-            "source ~/.zprofile",
-            "git clone https://github.com/yonaskolb/Mint",
-            "cd Mint",
-            "sudo make",
-            "cd ..",
-            "sudo rm -rf Mint",
         ]
     }
 
