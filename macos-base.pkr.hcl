@@ -8,7 +8,7 @@ packer {
 }
 
 source "tart-cli" "tart" {
-    from_ipsw    = "https://updates.cdn-apple.com/2025SummerFCS/fullrestores/093-10809/CFD6DD38-DAF0-40DA-854F-31AAD1294C6F/UniversalMac_15.6.1_24G90_Restore.ipsw"
+    from_ipsw    = "https://updates.cdn-apple.com/2025FallFCS/fullrestores/093-37622/CE01FAB2-7F26-48EE-AEE4-5E57A7F6D8BB/UniversalMac_26.0_25A354_Restore.ipsw"
     vm_name      = "macos-base"
     cpu_count    = 4
     memory_gb    = 8
@@ -39,7 +39,7 @@ source "tart-cli" "tart" {
         # Data & Privacy
         "<wait10s><leftShiftOn><tab><leftShiftOff><spacebar>",
         # Create a Mac Account
-        "<wait10s>Managed via Tart<tab>admin<tab>admin<tab>admin<tab><tab><spacebar><tab><tab><spacebar>",
+        "<wait10s><tab><tab><tab><tab><tab><tab>Managed via Tart<tab>admin<tab>admin<tab>admin<tab><tab><spacebar><tab><tab><spacebar>",
         # Enable Voice Over
         "<wait120s><leftAltOn><f5><leftAltOff>",
         # Sign In with Your Apple ID
@@ -55,49 +55,53 @@ source "tart-cli" "tart" {
         # Are you sure you don't want to use Location Services?
         "<wait10s><tab><spacebar>",
         # Select Your Time Zone
-        "<wait10s><tab><tab>UTC<enter><leftShiftOn><tab><tab><leftShiftOff><spacebar>",
+        "<wait10s><tab><tab><tab>UTC<enter><leftShiftOn><tab><leftShiftOff><spacebar>",
         # Analytics
         "<wait10s><leftShiftOn><tab><leftShiftOff><spacebar>",
         # Screen Time
-        "<wait10s><tab><spacebar>",
+        "<wait10s><tab><tab><spacebar>",
         # Siri
         "<wait10s><tab><spacebar><leftShiftOn><tab><leftShiftOff><spacebar>",
+        # You Mac is Ready for FileVault
+        "<wait10s><leftShiftOn><tab><tab><leftShiftOff><spacebar>",
+        # Mac Data Will Not Be Securely Encrypted
+        "<wait10s><tab><spacebar>",
         # Choose Your Look
         "<wait10s><leftShiftOn><tab><leftShiftOff><spacebar>",
         # Update Mac Automatically
-        "<wait10s><tab><spacebar>",
+        "<wait10s><tab><tab><spacebar>",
         # Welcome to Mac
-        "<wait10s><spacebar>",
+        "<wait30s><spacebar>",
         # Disable Voice Over
-        "<leftAltOn><f5><leftAltOff>",
+        "<wait10s><leftAltOn><f5><leftAltOff>",
         # Enable Keyboard navigation
         # This is so that we can navigate the System Settings app using the keyboard
-        "<wait10s><leftAltOn><spacebar><leftAltOff>Terminal<enter>",
-        "<wait10s>defaults write NSGlobalDomain AppleKeyboardUIMode -int 3<enter>",
-        "<wait10s><leftAltOn>q<leftAltOff>",
-        # Now that the installation is done, open "System Settings"
-        "<wait10s><leftAltOn><spacebar><leftAltOff>System Settings<enter>",
+        "<wait10s><leftAltOn><spacebar><leftAltOff>Terminal<wait10s><enter>",
+        "<wait10s><wait10s>defaults write NSGlobalDomain AppleKeyboardUIMode -int 3<enter>",
+        # Now that the installation is done, open "System Settings", open through Terminal as on Tahoe Spotlight opens System Information instead
+        "<wait10s>open '/System/Applications/System Settings.app'<enter>",
         # Navigate to "Sharing"
-        "<wait10s><leftCtrlOn><f2><leftCtrlOff><right><right><right><down>Sharing<enter>",
+        "<wait15s><leftCtrlOn><f2><leftCtrlOff><right><right><right><down>Sharing<enter>",
         # Navigate to "Screen Sharing" and enable it
-        "<wait10s><tab><tab><tab><tab><tab><tab><tab><spacebar>",
+        "<wait15s><tab><tab><tab><tab><tab><spacebar>",
         # Navigate to "Remote Login" and enable it
-        "<wait10s><tab><tab><tab><tab><tab><tab><tab><tab><tab><tab><tab><tab><spacebar>",
+        "<wait15s><tab><tab><tab><tab><tab><tab><tab><tab><tab><tab><tab><tab><spacebar>",
         # Quit System Settings
         "<wait10s><leftAltOn>q<leftAltOff>",
         # Disable Gatekeeper (1/2)
-        "<wait10s><leftAltOn><spacebar><leftAltOff>Terminal<enter>",
         "<wait10s>sudo spctl --global-disable<enter>",
         "<wait10s>admin<enter>",
-        "<wait10s><leftAltOn>q<leftAltOff>",
         # Disable Gatekeeper (2/2)
-        "<wait10s><leftAltOn><spacebar><leftAltOff>System Settings<enter>",
+        # open "System Settings", open through Terminal as on Tahoe Spotlight opens System Information instead
+        "<wait10s>open '/System/Applications/System Settings.app'<enter>",
         "<wait10s><leftCtrlOn><f2><leftCtrlOff><right><right><right><down>Privacy & Security<enter>",
-        "<wait10s><leftShiftOn><tab><leftShiftOff><leftShiftOn><tab><leftShiftOff><leftShiftOn><tab><leftShiftOff><leftShiftOn><tab><leftShiftOff><leftShiftOn><tab><leftShiftOff><leftShiftOn><tab><leftShiftOff><leftShiftOn><tab><leftShiftOff>",
+        "<wait10s><leftShiftOn><tab><tab><tab><tab><tab><leftShiftOff>",
         "<wait10s><down><wait1s><down><wait1s><enter>",
         "<wait10s>admin<enter>",
         "<wait10s><leftShiftOn><tab><leftShiftOff><wait1s><spacebar>",
         # Quit System Settings
+        "<wait10s><leftAltOn>q<leftAltOff>",
+        # Quit Terminal
         "<wait10s><leftAltOn>q<leftAltOff>",
     ]
 

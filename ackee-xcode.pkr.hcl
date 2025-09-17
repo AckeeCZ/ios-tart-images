@@ -57,7 +57,7 @@ build {
     provisioner "shell" {
         inline = [
             "source ~/.zprofile",
-            "brew install carthage unzip zip ca-certificates",
+            "brew install carthage unzip zip ca-certificates mint",
         ]
     }
 
@@ -75,18 +75,6 @@ build {
             "sudo add-certificate AppleWWDRCAG3.cer",
             "sudo add-certificate DeveloperIDG2CA.cer",
             "rm add-certificate* *.cer"
-        ]
-    }
-
-    # mint
-    provisioner "shell" {
-        inline = [
-            "source ~/.zprofile",
-            "git clone https://github.com/yonaskolb/Mint",
-            "cd Mint",
-            "sudo make",
-            "cd ..",
-            "sudo rm -rf Mint",
         ]
     }
 
