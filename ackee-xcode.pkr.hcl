@@ -81,6 +81,7 @@ build {
             "curl https://mise.run | sh",
             "~/.local/bin/mise activate --shims >> ~/.zprofile",
             "source ~/.zprofile",
+            "mise version",
             "mise install tuist swiftlint --yes",
             "xcrun simctl create 'iPhone 13 Pro Max' 'iPhone 13 Pro Max'",
         ]
