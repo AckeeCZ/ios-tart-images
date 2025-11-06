@@ -23,6 +23,6 @@ usage = '''
 arg "<version>" help="Xcode version to be pushed to DockerHub, expects image 'ackee-xcode:<version>' to be built in tart and authenticated account to DockerHub, also pushes tag to git"
 '''
 run = [
-    "tart push ackee-xcode:${usage_version} registry.hub.docker.com/ackee/tart-gitlab-builder-ios:${usage_version} --populate-cache",
+    "tart push ackee-xcode:${usage_version} registry.hub.docker.com/ackee/tart-gitlab-builder-ios:${usage_version} --populate-cache --concurrency 1",
     "git tag ackee-xcode/${usage_version} && git push origin ackee-xcode/${usage_version}",
 ]
