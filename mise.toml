@@ -13,10 +13,13 @@ run = "mise install && packer plugins install github.com/cirruslabs/tart"
 usage = '''
 arg "<xcode_version>" help="Xcode version to be installed, make sure you have '~/Downloads/Xcode_<xcode_version>.xip' downloaded"
 '''
-run = "packer build -var 'xcode_version=${usage_xcode_version}' ackee-xcode.pkr.hcl"
+run = "packer build -var xcode_version=${usage_xcode_version} ackee-xcode.pkr.hcl"
 
 [tasks.push_xcode]
 usage = '''
-arg "<version>" help="Image to be pushed to DockerHub, expects image 'ackee-xcode:<version>' to be built in tart and authenticated account to DockerHub"
+arg "<version>" help="Xcode version to be pushed to DockerHub, expects image 'ackee-xcode:<version>' to be built in tart and authenticated account to DockerHub, also pushes tag to git"
 '''
-run = "tart push ackee-xcode:${usage_version} registry.hub.docker.com/ackee/tart-gitlab-builder-ios:${usage_version} --populate-cache"
+run = [
+    "tart push ackee-xcode:${usage_version} registry.hub.docker.com/ackee/tart-gitlab-builder-ios:${usage_version} --populate-cache",
+    "git tag ackee-xcode/${usage_version} && git push origin ackee-xcode/${usage_version}",
+]
