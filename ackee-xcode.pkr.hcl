@@ -47,6 +47,8 @@ build {
             "defaults write com.apple.dt.Xcode IDESkipPackagePluginFingerprintValidatation -bool YES",
             # enable all macros
             "defaults write com.apple.dt.Xcode IDESkipMacroFingerprintValidation -bool YES",
+            # enable prebuilt SPM packages
+            "defaults write com.apple.dt.Xcode IDEPackageEnablePrebuilts YES"
         ]
     }
 
