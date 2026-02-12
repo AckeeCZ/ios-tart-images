@@ -1,14 +1,14 @@
 packer {
     required_plugins {
         tart = {
-            version = ">= 1.12.0"
+            version = ">= 1.16.0"
             source  = "github.com/cirruslabs/tart"
         }
     }
 }
 
 source "tart-cli" "tart" {
-    from_ipsw    = "https://updates.cdn-apple.com/2025FallFCS/fullrestores/093-37622/CE01FAB2-7F26-48EE-AEE4-5E57A7F6D8BB/UniversalMac_26.0_25A354_Restore.ipsw"
+    from_ipsw    = "https://updates.cdn-apple.com/2026WinterFCS/fullrestores/047-60229/6D5DBEA5-75A0-4BEF-ACC9-5ACF9B8DF6B7/UniversalMac_26.3_25D125_Restore.ipsw"
     vm_name      = "macos-base"
     cpu_count    = 4
     memory_gb    = 8
@@ -29,7 +29,7 @@ source "tart-cli" "tart" {
         # [1]: should be named "English (US)", but oh well 🤷
         "<wait30s>italiano<esc>english<enter>",
         # Select Your Country or Region
-        "<wait30s>czechia<leftShiftOn><tab><leftShiftOff><spacebar>",
+        "<wait30s><click 'Select Your Country or Region'><wait5s>czechia<leftShiftOn><tab><leftShiftOff><spacebar>",
         # Transfer Your Data to This Mac
         "<wait10s><tab><tab><tab><spacebar><tab><tab><spacebar>",
         # Written and Spoken Languages
@@ -78,24 +78,25 @@ source "tart-cli" "tart" {
         # This is so that we can navigate the System Settings app using the keyboard
         "<wait10s><leftAltOn><spacebar><leftAltOff>Terminal<wait10s><enter>",
         "<wait10s><wait10s>defaults write NSGlobalDomain AppleKeyboardUIMode -int 3<enter>",
-        # Now that the installation is done, open "System Settings", open through Terminal as on Tahoe Spotlight opens System Information instead
+        # Now that the installation is done, open "System Settings"
+        # On Tahoe opening System Settings through Spotlight is not very reliable, sometimes opens System information
         "<wait10s>open '/System/Applications/System Settings.app'<enter>",
         # Navigate to "Sharing"
-        "<wait15s><leftCtrlOn><f2><leftCtrlOff><right><right><right><down>Sharing<enter>",
+        "<wait10s><leftCtrlOn><f2><leftCtrlOff><right><right><right><down>Sharing<enter>",
         # Navigate to "Screen Sharing" and enable it
-        "<wait15s><tab><tab><tab><tab><tab><spacebar>",
+        "<wait10s><tab><tab><tab><tab><tab><spacebar>",
         # Navigate to "Remote Login" and enable it
-        "<wait15s><tab><tab><tab><tab><tab><tab><tab><tab><tab><tab><tab><tab><spacebar>",
+        "<wait10s><tab><tab><tab><tab><tab><tab><tab><tab><tab><tab><tab><tab><spacebar>",
         # Quit System Settings
         "<wait10s><leftAltOn>q<leftAltOff>",
         # Disable Gatekeeper (1/2)
         "<wait10s>sudo spctl --global-disable<enter>",
         "<wait10s>admin<enter>",
         # Disable Gatekeeper (2/2)
-        # open "System Settings", open through Terminal as on Tahoe Spotlight opens System Information instead
+        # On Tahoe opening System Settings through Spotlight is not very reliable, sometimes opens System information
         "<wait10s>open '/System/Applications/System Settings.app'<enter>",
         "<wait10s><leftCtrlOn><f2><leftCtrlOff><right><right><right><down>Privacy & Security<enter>",
-        "<wait10s><leftShiftOn><tab><tab><tab><tab><tab><leftShiftOff>",
+        "<wait10s><leftShiftOn><tab><tab><tab><tab><tab><tab><leftShiftOff>",
         "<wait10s><down><wait1s><down><wait1s><enter>",
         "<wait10s>admin<enter>",
         "<wait10s><leftShiftOn><tab><leftShiftOff><wait1s><spacebar>",
