@@ -102,8 +102,6 @@ source "tart-cli" "tart" {
         "<wait10s><leftShiftOn><tab><leftShiftOff><wait1s><spacebar>",
         # Quit System Settings
         "<wait10s><leftAltOn>q<leftAltOff>",
-        # Quit Terminal
-        "<wait10s><leftAltOn>q<leftAltOff>",
     ]
 
     // A (hopefully) temporary workaround for Virtualization.Framework's
@@ -144,6 +142,7 @@ build {
     provisioner "shell" {
         inline = [
             "/bin/bash -c \"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\"",
+            "echo \"security unlock-keychain -p admin\" >> ~/.zprofile",
             "echo \"export LANG=en_US.UTF-8\" >> ~/.zprofile",
             "echo 'eval \"$(/opt/homebrew/bin/brew shellenv)\"' >> ~/.zprofile",
             "echo \"export HOMEBREW_NO_AUTO_UPDATE=1\" >> ~/.zprofile",

@@ -3,7 +3,7 @@ packer = "1.9.4"
 
 [tasks]
 install_tart = "brew install cirruslabs/cli/tart"
-build_macos = "packer build macos-base.pkr.hcl"
+build_macos = "packer init macos-base.pkr.hcl && packer build macos-base.pkr.hcl"
 
 [tasks.bootstrap]
 description = "Install all prerequisities"
@@ -16,6 +16,16 @@ usage = '''
 arg "<xcode_version>" help="Xcode version to be installed, make sure you have '~/Downloads/Xcode_<xcode_version>.xip' downloaded"
 '''
 run = "packer build -var xcode_version=${usage_xcode_version} ackee-xcode.pkr.hcl"
+
+[tasks.push_macos_base]
+description = "Push local macos-base macOS base image to DockerHub with given tag"
+usage = '''
+arg "<tag>" help="Tag that will be used for the image, e.g. 26.3 would produce image macos_base:26.3"
+'''
+run = [
+    "tart push macos-base registry.hub.docker.com/ackee/tart-macos-base:${usage_tag} --populate-cache --concurrency 1",
+    "git tag macos-base/${usage_tag} && git push origin macos-base/${usage_tag}",
+]
 
 [tasks.push_xcode]
 description = "Push built Xcode image to DockerHub"
