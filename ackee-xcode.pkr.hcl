@@ -36,7 +36,7 @@ build {
         inline = [
             "echo 'export PATH=/usr/local/bin/:$PATH' >> ~/.zprofile",
             "source ~/.zprofile",
-            "brew install xcodesorg/made/xcodes",
+            "brew install xcodes",
             "echo 'Starting Xcode installation'",
             "sudo xcodes install ${var.xcode_version} --experimental-unxip --path /Users/admin/Downloads/Xcode_${var.xcode_version}.xip --select --empty-trash",
             "echo 'Xcode installed'",
