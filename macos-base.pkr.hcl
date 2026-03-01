@@ -17,6 +17,7 @@ source "tart-cli" "tart" {
     ssh_username = "admin"
     ssh_timeout  = "120s"
     headless     = true
+    recovery_partition = "keep"
     boot_command = [
         # hello, hola, bonjour, etc.
         "<wait60s><spacebar>",

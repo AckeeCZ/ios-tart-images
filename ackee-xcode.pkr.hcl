@@ -85,6 +85,7 @@ build {
             "source ~/.zprofile",
             "mise version",
             "mise install tuist swiftlint --yes",
+            "xcrun simctl delete all",
             "xcrun simctl create 'iPhone 13 Pro Max' 'iPhone 13 Pro Max'",
         ]
     }
