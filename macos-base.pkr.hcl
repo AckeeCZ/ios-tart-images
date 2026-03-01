@@ -12,7 +12,7 @@ source "tart-cli" "tart" {
     vm_name      = "macos-base"
     cpu_count    = 4
     memory_gb    = 8
-    disk_size_gb = 40
+    disk_size_gb = 100
     ssh_password = "admin"
     ssh_username = "admin"
     ssh_timeout  = "120s"
@@ -150,7 +150,7 @@ build {
             "source ~/.zprofile",
             "brew --version",
             "brew update",
-            "brew install wget cmake gcc git-lfs jq gh gitlab-runner",
+            "brew install wget cmake gcc git-lfs jq gitlab-runner",
             "git lfs install",
         ]
     }
