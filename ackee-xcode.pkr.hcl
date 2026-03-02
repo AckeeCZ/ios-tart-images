@@ -87,6 +87,7 @@ build {
             "mise install tuist swiftlint --yes",
             "xcrun simctl delete all",
             "xcrun simctl create 'iPhone 13 Pro Max' 'iPhone 13 Pro Max'",
+            "xcrun simctl create 'iPhone 17 Pro' 'iPhone 17 Pro'",
         ]
     }
 
