@@ -169,8 +169,8 @@ build {
             "brew install libyaml rbenv", # https://github.com/rbenv/ruby-build/discussions/2118
             "echo 'if which rbenv > /dev/null; then eval \"$(rbenv init -)\"; fi' >> ~/.zprofile",
             "source ~/.zprofile",
-            "rbenv install 3.1.4",
-            "rbenv global 3.1.4",
+            "rbenv install 3.4.9",
+            "rbenv global 3.4.9",
             "gem install bundler",
         ]
     }
