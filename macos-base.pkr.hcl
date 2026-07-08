@@ -1,14 +1,14 @@
 packer {
     required_plugins {
         tart = {
-            version = ">= 1.16.0"
+            version = ">= 1.20.0"
             source  = "github.com/cirruslabs/tart"
         }
     }
 }
 
 source "tart-cli" "tart" {
-    from_ipsw    = "https://updates.cdn-apple.com/2026WinterFCS/fullrestores/122-00766/062A6121-2ABE-45D7-BCB1-72B666B6D2C2/UniversalMac_26.4_25E246_Restore.ipsw"
+    from_ipsw    = "https://updates.cdn-apple.com/2026SpringFCS/fullrestores/140-24263/B95838F0-6815-4F0B-A039-156526C081AD/UniversalMac_26.5.2_25F84_Restore.ipsw"
     vm_name      = "macos-base"
     cpu_count    = 4
     memory_gb    = 8
@@ -160,6 +160,9 @@ build {
             "brew update",
             "brew install wget cmake gcc git-lfs jq gitlab-runner",
             "git lfs install",
+            // drop bottles kept by HOMEBREW_NO_INSTALL_CLEANUP=1, keep the api JSON cache
+            "brew cleanup -s --prune=all || true",
+            "find \"$(brew --cache)\" -mindepth 1 -maxdepth 1 ! -name api -exec rm -rf {} + || true",
         ]
     }
 
@@ -172,6 +175,32 @@ build {
             "rbenv install 3.4.9",
             "rbenv global 3.4.9",
             "gem install bundler",
+            "brew cleanup -s --prune=all || true",
+            "find \"$(brew --cache)\" -mindepth 1 -maxdepth 1 ! -name api -exec rm -rf {} + || true",
+        ]
+    }
+
+    // Reclaim disk space before shutdown: purge logs and transient files, then
+    // zero-fill free space so `tart push` compresses it away and `tart pull`
+    // restores it as holes (sparse file) on CI hosts. Must stay the last provisioner.
+    provisioner "shell" {
+        timeout = "30m"
+        inline = [
+            "sudo log erase --all || true",
+            "sudo rm -rf /Library/Logs/* ~/Library/Logs/* /private/var/log/*.log /private/tmp/* 2>/dev/null || true",
+            "rm -rf ~/.Trash/* ~/Downloads/* 2>/dev/null || true",
+            // local APFS snapshots would pin freed blocks in the pushed image
+            "tmutil listlocalsnapshots / || true",
+            "sudo tmutil deletelocalsnapshots / 2>/dev/null || true",
+            // leave a 1 GiB margin so the volume never hits 100%
+            "FREE_MB=$(df -m /System/Volumes/Data | awk 'NR==2 {print $4}')",
+            "COUNT=$((FREE_MB - 1024))",
+            "echo Zero-filling $COUNT MB of free space",
+            "[ $COUNT -gt 0 ] && dd if=/dev/zero of=$HOME/zerofill bs=1m count=$COUNT || true",
+            "sync",
+            "rm -f $HOME/zerofill",
+            "sync",
+            "df -h",
         ]
     }
 }

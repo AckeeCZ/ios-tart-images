@@ -1,7 +1,7 @@
 packer {
     required_plugins {
         tart = {
-            version = ">= 1.12.0"
+            version = ">= 1.20.0"
             source  = "github.com/cirruslabs/tart"
         }
     }
@@ -48,14 +48,20 @@ build {
             # enable all macros
             "defaults write com.apple.dt.Xcode IDESkipMacroFingerprintValidation -bool YES",
             # enable prebuilt SPM packages
-            "defaults write com.apple.dt.Xcode IDEPackageEnablePrebuilts YES"
+            "defaults write com.apple.dt.Xcode IDEPackageEnablePrebuilts YES",
+            # drop bottles kept by HOMEBREW_NO_INSTALL_CLEANUP=1, keep the api JSON cache
+            "brew cleanup -s --prune=all || true",
+            "find \"$(brew --cache)\" -mindepth 1 -maxdepth 1 ! -name api -exec rm -rf {} + || true",
+            "rm -rf ~/Library/Caches/com.apple.dt.Xcode || true"
         ]
     }
 
     provisioner "shell" {
         inline = [
             "source ~/.zprofile",
-            "brew install carthage unzip zip ca-certificates mint",
+            "brew install carthage ca-certificates",
+            "brew cleanup -s --prune=all || true",
+            "find \"$(brew --cache)\" -mindepth 1 -maxdepth 1 ! -name api -exec rm -rf {} + || true",
         ]
     }
 
@@ -88,6 +94,12 @@ build {
             "xcrun simctl delete all",
             "xcrun simctl create 'iPhone 13 Pro Max' 'iPhone 13 Pro Max'",
             "xcrun simctl create 'iPhone 17 Pro' 'iPhone 17 Pro'",
+            # prebuild the simulator dyld shared cache (~2-4 GB) so fresh clones don't
+            # burn minutes of CPU in update_dyld_sim_shared_cache on first simulator boot
+            "xcrun simctl runtime dyld_shared_cache update --all || sleep 180",
+            # keep ~/.local/share/mise/installs (tuist/swiftlint live there), drop caches only
+            "mise cache clear || true",
+            "rm -rf ~/.local/share/mise/downloads ~/Library/Caches/mise || true",
         ]
     }
 
@@ -99,6 +111,8 @@ build {
             "echo 'export PATH=\"/opt/homebrew/opt/openjdk@17/bin:$PATH\"' >> ~/.zprofile",
             "echo 'export CPPFLAGS=\"-I/opt/homebrew/opt/openjdk@17/include:$CPPFLAGS\"' >> ~/.zprofile",
             "echo 'export JAVA_HOME=\"/opt/homebrew/opt/openjdk@17\"' >> ~/.zprofile",
+            "brew cleanup -s --prune=all || true",
+            "find \"$(brew --cache)\" -mindepth 1 -maxdepth 1 ! -name api -exec rm -rf {} + || true",
         ]
     }
 
@@ -115,7 +129,37 @@ build {
             "echo Corepack use yarn",
             "corepack use yarn@4",
             "echo Run npm i",
-            "npm i -g eas-cli"
+            "npm i -g eas-cli",
+            # do NOT touch ~/.cache — ~/.cache/node/corepack is the live install of the
+            # pinned yarn@4 (and ~/package.json holds the pin), not a disposable cache
+            "npm cache clean --force || true",
+            "brew cleanup -s --prune=all || true",
+            "find \"$(brew --cache)\" -mindepth 1 -maxdepth 1 ! -name api -exec rm -rf {} + || true",
+        ]
+    }
+
+    # reclaim disk space before shutdown: purge logs and transient files, then
+    # zero-fill free space so `tart push` compresses it away and `tart pull`
+    # restores it as holes (sparse file) on CI hosts. The free space check below
+    # doubles as a guard that the zerofill file was actually deleted.
+    provisioner "shell" {
+        timeout = "30m"
+        inline = [
+            "sudo log erase --all || true",
+            "sudo rm -rf /Library/Logs/* ~/Library/Logs/* /private/var/log/*.log /private/tmp/* 2>/dev/null || true",
+            "rm -rf ~/.Trash/* ~/Downloads/* 2>/dev/null || true",
+            # local APFS snapshots would pin freed blocks in the pushed image
+            "tmutil listlocalsnapshots / || true",
+            "sudo tmutil deletelocalsnapshots / 2>/dev/null || true",
+            # leave a 1 GiB margin so the volume never hits 100%
+            "FREE_MB=$(df -m /System/Volumes/Data | awk 'NR==2 {print $4}')",
+            "COUNT=$((FREE_MB - 1024))",
+            "echo Zero-filling $COUNT MB of free space",
+            "[ $COUNT -gt 0 ] && dd if=/dev/zero of=$HOME/zerofill bs=1m count=$COUNT || true",
+            "sync",
+            "rm -f $HOME/zerofill",
+            "sync",
+            "df -h",
         ]
     }
 
