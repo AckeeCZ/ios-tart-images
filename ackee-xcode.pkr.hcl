@@ -56,8 +56,6 @@ build {
         inline = [
             "source ~/.zprofile",
             "brew install carthage unzip zip ca-certificates",
-            "brew cleanup -s --prune=all || true",
-            "find \"$(brew --cache)\" -mindepth 1 -maxdepth 1 ! -name api -exec rm -rf {} + || true",
         ]
     }
 
@@ -118,6 +116,14 @@ build {
             "corepack use yarn@4",
             "echo Run npm i",
             "npm i -g eas-cli"
+        ]
+    }
+
+    provisioner "shell" {
+        inline = [
+            "source ~/.zprofile",
+            "brew cleanup -s --prune=all || true",
+            "find \"$(brew --cache)\" -mindepth 1 -maxdepth 1 ! -name api -exec rm -rf {} + || true",
         ]
     }
 
