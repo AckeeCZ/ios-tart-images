@@ -12,7 +12,7 @@ variable "xcode_version" {
 }
 
 source "tart-cli" "tart" {
-    vm_base_name = "registry.hub.docker.com/ackee/tart-macos-base:tahoe"
+    vm_base_name = "registry.hub.docker.com/ackee/tart-macos-base:golden-gate"
     vm_name      = "ackee-xcode:${var.xcode_version}"
     cpu_count    = 4
     memory_gb    = 8
@@ -124,6 +124,21 @@ build {
             "source ~/.zprofile",
             "brew cleanup -s --prune=all || true",
             "find \"$(brew --cache)\" -mindepth 1 -maxdepth 1 ! -name api -exec rm -rf {} + || true",
+        ]
+    }
+
+    # Pre-build Spotlight index so that jobs don't start with indexing the whole disk
+    # Spotlight must stay enabled as Carthage relies on it
+    provisioner "shell" {
+        inline = [
+            "sudo mdutil -i on /",
+            "echo 'Waiting for Spotlight to index Xcode'",
+            "for i in $(seq 1 360); do mdfind \"kMDItemCFBundleIdentifier == 'com.apple.dt.Xcode'\" | grep -q . && break; sleep 10; done",
+            "mdfind \"kMDItemCFBundleIdentifier == 'com.apple.dt.Xcode'\" | grep . || { echo 'Spotlight did not index Xcode'; exit 1; }",
+            "echo 'Waiting for Spotlight indexing to settle'",
+            "idle=0; for i in $(seq 1 720); do cpu=$(ps -A -o %cpu=,comm= | awk '/mds|mdworker/ {s+=$1} END {printf \"%d\", s}'); if [ $cpu -lt 5 ]; then idle=$((idle+1)); else idle=0; fi; [ $idle -ge 12 ] && break; sleep 5; done",
+            "[ $idle -ge 12 ] && echo 'Spotlight indexing settled' || echo 'WARNING: Spotlight still busy after 1 hour'",
+            "sudo mdutil -s /",
         ]
     }
 
