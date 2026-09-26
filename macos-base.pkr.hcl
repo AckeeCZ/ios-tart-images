@@ -8,104 +8,57 @@ packer {
 }
 
 source "tart-cli" "tart" {
-    from_ipsw    = "https://updates.cdn-apple.com/2026WinterFCS/fullrestores/122-00766/062A6121-2ABE-45D7-BCB1-72B666B6D2C2/UniversalMac_26.4_25E246_Restore.ipsw"
+    from_ipsw    = "https://updates.cdn-apple.com/2026FallFCS/afcfc88e-bbe6-44bf-a5da-07c56eebc06c/UniversalMac_27.0_26A428_Restore.ipsw"
     vm_name      = "macos-base"
     cpu_count    = 4
     memory_gb    = 8
     disk_size_gb = 100
+    disk_format  = "asif"
     ssh_password = "admin"
     ssh_username = "admin"
-    ssh_timeout  = "120s"
+    ssh_timeout  = "180s"
     headless     = true
     recovery_partition = "keep"
+    // Replaces the Setup Assistant flow, requires Tart 2.33.0+ and macOS 27+ on both the host and guest VM
+    run_extra_args = [
+        "--provisioning-opts=${join(",", [
+            "fullName=Managed via Tart",
+            "username=admin",
+            "password=admin",
+            "logsInAutomatically=true",
+            "enablesRemoteLogin=true",
+        ])}",
+    ]
     boot_command = [
-        # hello, hola, bonjour, etc.
-        "<wait60s><spacebar>",
-        # Language: most of the times we have a list of "English"[1], "English (UK)", etc. with
-        # "English" language already selected. If we type "english", it'll cause us to switch
-        # to the "English (UK)", which is not what we want. To solve this, we switch to some other
-        # language first, e.g. "Italiano" and then switch back to "English". We'll then jump to the
-        # first entry in a list of "english"-prefixed items, which will be "English".
-        #
-        # [1]: should be named "English (US)", but oh well 🤷
-        "<wait30s>italiano<esc>english<enter>",
-        # Select Your Country or Region
-        "<wait30s><click 'Select Your Country or Region'><wait5s>czechia<leftShiftOn><tab><leftShiftOff><spacebar>",
-        # Transfer Your Data to This Mac
-        "<wait10s><tab><tab><tab><spacebar><tab><tab><spacebar>",
-        # Written and Spoken Languages
-        "<wait10s><leftShiftOn><tab><leftShiftOff><spacebar>",
-        # Accessibility
-        "<wait10s><leftShiftOn><tab><leftShiftOff><spacebar>",
-        # Data & Privacy
-        "<wait10s><leftShiftOn><tab><leftShiftOff><spacebar>",
-        # Create a Mac Account
-        "<wait10s><tab><tab><tab><tab><tab><tab>Managed via Tart<tab>admin<tab>admin<tab>admin<tab><tab><spacebar><tab><tab><spacebar>",
-        # Enable Voice Over
-        "<wait120s><leftAltOn><f5><leftAltOff>",
-        # Sign In with Your Apple ID
-        "<wait10s><leftShiftOn><tab><leftShiftOff><spacebar><up><spacebar>",
-        # Are you sure you want to skip signing in with an Apple ID?
-        "<wait10s><tab><spacebar>",
-        # Terms and Conditions
-        "<wait10s><leftShiftOn><tab><leftShiftOff><spacebar>",
-        # I have read and agree to the macOS Software License Agreement
-        "<wait10s><tab><spacebar>",
-        # Age Range -> Adult
-        "<wait10s><tab><tab><tab><spacebar>",
-        # Enable Location Services
-        "<wait10s><leftShiftOn><tab><leftShiftOff><spacebar>",
-        # Are you sure you don't want to use Location Services?
-        "<wait10s><tab><spacebar>",
-        # Select Your Time Zone
-        "<wait10s><tab><tab><tab>UTC<enter><leftShiftOn><tab><leftShiftOff><spacebar>",
-        # Analytics
-        "<wait10s><leftShiftOn><tab><leftShiftOff><spacebar>",
-        # Screen Time
-        "<wait10s><tab><tab><spacebar>",
-        # Siri
-        "<wait10s><tab><spacebar><leftShiftOn><tab><leftShiftOff><spacebar>",
-        # You Mac is Ready for FileVault
-        "<wait10s><leftShiftOn><tab><tab><leftShiftOff><spacebar>",
-        # Mac Data Will Not Be Securely Encrypted
-        "<wait10s><tab><spacebar>",
-        # Choose Your Look
-        "<wait10s><leftShiftOn><tab><leftShiftOff><spacebar>",
-        # Update Mac Automatically
-        "<wait10s><tab><tab><spacebar>",
-        # Welcome to Mac
-        "<wait30s><spacebar>",
-        # Disable Voice Over
-        "<wait10s><leftAltOn><f5><leftAltOff>",
+        # Wait for first-boot provisioning to finish automatic login
+        "<wait120s>",
         # Enable Keyboard navigation
         # This is so that we can navigate the System Settings app using the keyboard
         "<wait10s><leftAltOn><spacebar><leftAltOff>Terminal<wait10s><enter>",
         "<wait10s><wait10s>defaults write NSGlobalDomain AppleKeyboardUIMode -int 3<enter>",
-        # Now that the installation is done, open "System Settings"
-        # On Tahoe opening System Settings through Spotlight is not very reliable, sometimes opens System information
-        "<wait10s>open '/System/Applications/System Settings.app'<enter>",
-        "<wait120s>",
-        # Navigate to "Sharing"
-        "<wait10s><leftCtrlOn><f2><leftCtrlOff><right><right><right><down>Sharing<enter>",
-        # Navigate to "Screen Sharing" and enable it
-        "<wait10s><tab><tab><tab><tab><tab><spacebar>",
-        # Type in the password (only required for the first change)
-        "<wait10s>admin<enter>",
-        # Navigate to "Remote Login" and enable it
-        "<wait10s><tab><tab><tab><tab><tab><tab><tab><tab><tab><tab><tab><tab><spacebar>",
-        # Quit System Settings
-        "<wait10s><leftAltOn>q<leftAltOff>",
         # Disable Gatekeeper (1/2)
         "<wait10s>sudo spctl --global-disable<enter>",
         "<wait10s>admin<enter>",
         # Disable Gatekeeper (2/2)
-        # On Tahoe opening System Settings through Spotlight is not very reliable, sometimes opens System information
+        # Opening System Settings through Spotlight is not very reliable, sometimes opens System information
         "<wait10s>open '/System/Applications/System Settings.app'<enter>",
+        # Wait for System Settings to fully open before navigating with the keyboard
+        "<wait120s>",
         "<wait10s><leftCtrlOn><f2><leftCtrlOff><right><right><right><down>Privacy & Security<enter>",
         "<wait10s><leftShiftOn><tab><tab><tab><tab><tab><tab><leftShiftOff>",
         "<wait10s><down><wait1s><down><wait1s><enter>",
         "<wait10s>admin<enter>",
         "<wait10s><leftShiftOn><tab><leftShiftOff><wait1s><spacebar>",
+        # Quit System Settings
+        "<wait10s><leftAltOn>q<leftAltOff>",
+        # Refocus Terminal after quitting System Settings
+        "<wait10s><leftAltOn><spacebar><leftAltOff>Terminal<wait10s><enter>",
+        # Sharing is no longer listed in the View menu on macOS 27
+        "<wait10s>open 'x-apple.systempreferences:com.apple.Sharing-Settings.extension'<enter>",
+        # Enable Screen Sharing through the UI to grant the required TCC permissions
+        "<wait10s><tab><tab><tab><tab><tab><tab><spacebar>",
+        # Type in the password to allow enabling Screen Sharing
+        "<wait10s>admin<enter>",
         # Quit System Settings
         "<wait10s><leftAltOn>q<leftAltOff>",
         # Quit Terminal
@@ -124,26 +77,30 @@ build {
         inline = [
             // Enable passwordless sudo
             "echo admin | sudo -S sh -c \"mkdir -p /etc/sudoers.d/; echo 'admin ALL=(ALL) NOPASSWD: ALL' | EDITOR=tee visudo /etc/sudoers.d/admin-nopasswd\"",
-            // Enable auto-login
-            //
-            // See https://github.com/xfreebird/kcpassword for details.
-            "echo '00000000: 1ced 3f4a bcbc ba2c caca 4e82' | sudo xxd -r - /etc/kcpassword",
-            "sudo defaults write /Library/Preferences/com.apple.loginwindow autoLoginUser admin",
             // Set timezone to Prague
-            "sudo systemsetup -settimezone 'Europe/Prague'",
+            "sudo systemsetup -settimezone 'Europe/Prague' 2>/dev/null",
             // Disable screensaver at login screen
             "sudo defaults write /Library/Preferences/com.apple.screensaver loginWindowIdleTime 0",
             // Disable screensaver for admin user
             "defaults -currentHost write com.apple.screensaver idleTime 0",
             // Prevent the VM from sleeping
-            "sudo systemsetup -setdisplaysleep Off",
-            "sudo systemsetup -setsleep Off",
-            "sudo systemsetup -setcomputersleep Off",
+            "sudo systemsetup -setsleep Off 2>/dev/null",
             // Disable screen lock
             //
             // Note that this only works if the user is logged-in,
             // i.e. not on login screen.
             "sysadminctl -screenLock off -password admin",
+        ]
+    }
+
+    provisioner "shell" {
+        inline = [
+            # Ensure that Gatekeeper is disabled
+            "spctl --status | tee /dev/stderr | grep -q 'assessments disabled'",
+            # Ensure that Screen Sharing was enabled
+            "sudo launchctl print system/com.apple.screensharing > /dev/null || { echo 'Screen Sharing is not enabled'; exit 1; }",
+            # Ensure that FileVault remains disabled by default
+            "sudo fdesetup status | tee /dev/stderr | grep -q 'FileVault is Off'",
         ]
     }
 
