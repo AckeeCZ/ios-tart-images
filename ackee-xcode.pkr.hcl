@@ -148,21 +148,6 @@ build {
         ]
     }
 
-    # Pre-build Spotlight index so that jobs don't start with indexing the whole disk
-    # Spotlight must stay enabled as Carthage relies on it
-    provisioner "shell" {
-        inline = [
-            "sudo mdutil -i on /",
-            "echo 'Waiting for Spotlight to index Xcode'",
-            "for i in $(seq 1 360); do mdfind \"kMDItemCFBundleIdentifier == 'com.apple.dt.Xcode'\" | grep -q . && break; sleep 10; done",
-            "mdfind \"kMDItemCFBundleIdentifier == 'com.apple.dt.Xcode'\" | grep . || { echo 'Spotlight did not index Xcode'; exit 1; }",
-            "echo 'Waiting for Spotlight indexing to settle'",
-            "idle=0; for i in $(seq 1 720); do cpu=$(ps -A -o %cpu=,comm= | awk '/mds|mdworker/ {s+=$1} END {printf \"%d\", s}'); if [ $cpu -lt 5 ]; then idle=$((idle+1)); else idle=0; fi; [ $idle -ge 12 ] && break; sleep 5; done",
-            "[ $idle -ge 12 ] && echo 'Spotlight indexing settled' || echo 'WARNING: Spotlight still busy after 1 hour'",
-            "sudo mdutil -s /",
-        ]
-    }
-
     // check there is at least 15GB of free space and fail if not
     provisioner "shell" {
         inline = [
