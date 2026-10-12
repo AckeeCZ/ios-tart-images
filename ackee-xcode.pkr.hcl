@@ -1,7 +1,7 @@
 packer {
     required_plugins {
         tart = {
-            version = ">= 1.12.0"
+            version = ">= 1.21.0"
             source  = "github.com/cirruslabs/tart"
         }
     }
@@ -29,6 +29,15 @@ build {
     provisioner "file" {
         source      = pathexpand("~/Downloads/Xcode_${var.xcode_version}.xip")
         destination = "/Users/admin/Downloads/Xcode_${var.xcode_version}.xip"
+    }
+
+    # disable Spotlight indexing (before the Xcode install so it does not index the unpacked app)
+    provisioner "shell" {
+        inline = [
+            "echo 'Disabling spotlight...'",
+            "sudo mdutil -a -i off",
+            "sudo mdutil -a -E || true"
+        ]
     }
 
     # xcode
