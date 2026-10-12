@@ -1,5 +1,5 @@
 [tools]
-packer = "1.9.4"
+packer = "1.16.1"
 
 [tasks]
 install_tart = "brew install cirruslabs/cli/tart"
