@@ -61,6 +61,18 @@ build {
         ]
     }
 
+    # Make Xcode discoverable for tools that locate it via LaunchServices (e.g. Crashlytics upload-symbols)
+    provisioner "shell" {
+        inline = [
+            "XCODE_APP=\"$(dirname \"$(dirname \"$(xcode-select -p)\")\")\"",
+            "echo \"Registering $XCODE_APP in LaunchServices\"",
+            "/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -f \"$XCODE_APP\"",
+            "echo \"export DEVELOPER_DIR=$(xcode-select -p)\" >> ~/.zprofile",
+            "source ~/.zprofile",
+            "echo \"DEVELOPER_DIR=$DEVELOPER_DIR\""
+        ]
+    }
+
     provisioner "shell" {
         inline = [
             "source ~/.zprofile",
