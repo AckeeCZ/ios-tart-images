@@ -24,7 +24,9 @@ This image contains pretty much everything that is required by our stack to be i
 - [Mint](https://github.com/yonaskolb/Mint)
 - [Tuist](https://tuist.io)
 - OpenJDK for [KMP/KMM](https://kotlinlang.org/docs/multiplatform.html)
+- Android SDK (platforms 35–37, build-tools 35–36)
 - [ReactNative Expo](https://expo.dev)
+- [xcbeautify](https://github.com/cpisciotta/xcbeautify)
 
 This image is versioned based on Xcode version. Latest tag points to the latest stable version. As in [macOS-base](#macos-base) image, tags can be moved if we need to make any changes in it, for fixed version specify image's SHA. You can also use a v-prefixed tag that will ensure latest minor/bugfix version for specified major version, so using `v15` would point to latest published `15.x.x`. 
 
