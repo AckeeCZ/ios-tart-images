@@ -76,7 +76,7 @@ build {
     provisioner "shell" {
         inline = [
             "source ~/.zprofile",
-            "brew install carthage unzip zip ca-certificates",
+            "brew install carthage unzip zip ca-certificates xcbeautify glab",
         ]
     }
 
@@ -109,6 +109,7 @@ build {
             "xcrun simctl delete all",
             "xcrun simctl create 'iPhone 13 Pro Max' 'iPhone 13 Pro Max'",
             "xcrun simctl create 'iPhone 17 Pro' 'iPhone 17 Pro'",
+            "xcrun simctl create 'iPhone 17 Pro Max' 'iPhone 17 Pro Max'",
         ]
     }
 
@@ -119,7 +120,35 @@ build {
             "brew install openjdk@21",
             "echo 'export PATH=\"/opt/homebrew/opt/openjdk@21/bin:$PATH\"' >> ~/.zprofile",
             "echo 'export CPPFLAGS=\"-I/opt/homebrew/opt/openjdk@21/include:$CPPFLAGS\"' >> ~/.zprofile",
-            "echo 'export JAVA_HOME=\"/opt/homebrew/opt/openjdk@21\"' >> ~/.zprofile",
+            # the brew opt prefix is not a JDK home; java_home and Gradle need the libexec bundle
+            "echo 'export JAVA_HOME=\"/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home\"' >> ~/.zprofile",
+            "sudo ln -sfn /opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk-21.jdk",
+            "/usr/libexec/java_home -v 21",
+        ]
+    }
+
+    # Android SDK for KMP / React Native builds
+    provisioner "shell" {
+        inline = [
+            "source ~/.zprofile",
+            "brew install --cask android-commandlinetools",
+            "echo 'export ANDROID_HOME=\"$HOME/Library/Android/sdk\"' >> ~/.zprofile",
+            "echo 'export ANDROID_SDK_ROOT=\"$ANDROID_HOME\"' >> ~/.zprofile",
+            "echo 'export PATH=\"$ANDROID_HOME/platform-tools:$PATH\"' >> ~/.zprofile",
+            "source ~/.zprofile",
+            # licenses first, otherwise --install blocks on an interactive prompt
+            "yes | sdkmanager --sdk_root=\"$ANDROID_HOME\" --licenses > /dev/null",
+            "yes | sdkmanager --sdk_root=\"$ANDROID_HOME\" --install 'platform-tools' 'platforms;android-35' 'platforms;android-36' 'platforms;android-37.0' 'build-tools;35.0.0' 'build-tools;36.0.0' > /dev/null",
+            "sdkmanager --sdk_root=\"$ANDROID_HOME\" --list_installed",
+        ]
+    }
+
+    # Claude Code CLI; jobs supply their own token
+    provisioner "shell" {
+        inline = [
+            "source ~/.zprofile",
+            "curl -fsSL https://claude.ai/install.sh | bash",
+            "~/.local/bin/claude --version",
         ]
     }
 
