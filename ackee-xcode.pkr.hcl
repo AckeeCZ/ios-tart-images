@@ -76,7 +76,7 @@ build {
     provisioner "shell" {
         inline = [
             "source ~/.zprofile",
-            "brew install carthage unzip zip ca-certificates xcbeautify glab",
+            "brew install carthage unzip zip ca-certificates xcbeautify",
         ]
     }
 
@@ -140,15 +140,6 @@ build {
             "yes | sdkmanager --sdk_root=\"$ANDROID_HOME\" --licenses > /dev/null",
             "yes | sdkmanager --sdk_root=\"$ANDROID_HOME\" --install 'platform-tools' 'platforms;android-35' 'platforms;android-36' 'platforms;android-37.0' 'build-tools;35.0.0' 'build-tools;36.0.0' > /dev/null",
             "sdkmanager --sdk_root=\"$ANDROID_HOME\" --list_installed",
-        ]
-    }
-
-    # Claude Code CLI; jobs supply their own token
-    provisioner "shell" {
-        inline = [
-            "source ~/.zprofile",
-            "curl -fsSL https://claude.ai/install.sh | bash",
-            "~/.local/bin/claude --version",
         ]
     }
 
