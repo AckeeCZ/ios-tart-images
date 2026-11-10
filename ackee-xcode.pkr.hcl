@@ -109,7 +109,6 @@ build {
             "xcrun simctl delete all",
             "xcrun simctl create 'iPhone 13 Pro Max' 'iPhone 13 Pro Max'",
             "xcrun simctl create 'iPhone 17 Pro' 'iPhone 17 Pro'",
-            "xcrun simctl create 'iPhone 17 Pro Max' 'iPhone 17 Pro Max'",
         ]
     }
 
